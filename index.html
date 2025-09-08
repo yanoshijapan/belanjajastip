@@ -141,7 +141,37 @@
         .main-header, .promo-banner-container, .section-header, .category-card {
             opacity: 0; visibility: hidden;
         }
-
+        .file-upload-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            width: 100%;
+            margin-top: 5px;
+        }
+        .file-upload-btn {
+            border: 1px solid #ccc;
+            display: inline-block;
+            padding: 8px 12px;
+            cursor: pointer;
+            background-color: #f5f5f5;
+            border-radius: 5px;
+            width: 100%;
+            text-align: center;
+            font-size: 0.8rem;
+        }
+        .file-upload-wrapper input[type=file] {
+            font-size: 100px;
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+        .file-preview {
+            font-size: 0.8rem;
+            margin-top: 5px;
+            color: var(--secondary-color);
+        }
         @media (max-width: 600px) {
             #page-produk .product-page-grid { grid-template-columns: repeat(3, 1fr); gap: 10px; }
             .product-info { padding: 10px; }
@@ -223,6 +253,37 @@
             </div>
         </div>
     </main>
+    <div id="page-request" class="view">
+        <div class="cart-container">
+            <h2>Form Request Khusus</h2>
+            <p style="font-size: 0.8rem; margin-bottom: 20px;">
+                Isi nama barang dan upload foto untuk barang yang mau kamu request. 
+                Kamu tidak perlu mengisi semua kolom.
+            </p>
+    
+            <form id="request-form">
+                <div class="checkout-form">
+                    <div class="form-group">
+                        <label for="request-customer-name">Nama Lengkap</label>
+                        <input type="text" id="request-customer-name" placeholder="Masukkan nama lengkap" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="request-customer-whatsapp">Nomor WhatsApp Aktif</label>
+                        <input type="tel" id="request-customer-whatsapp" placeholder="Contoh: 081234567890" required>
+                    </div>
+                    <hr style="margin: 20px 0;">
+    
+                    <div id="request-items-container">
+                        </div>
+                </div>
+    
+                <div class="cart-actions" style="display: flex; flex-direction: column; gap: 10px;">
+                    <button type="submit" id="submit-request-btn" class="btn btn-primary">Kirim List Request</button>
+                    <button type="button" class="btn back-to-home" style="background-color: #808080;">Kembali ke Halaman Utama</button>
+                </div>
+            </form>
+        </div>
+    </div>
     <div id="checkout-popup" class="modal">
         <div class="popup-content">
             <h2>Terima Kasih!</h2>
@@ -256,7 +317,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const CATEGORY_DETAILS = { "Mie": { title: "Aneka Mie" }, "Bumbu": { title: "Aneka Bumbu" }, "Sambal": { title: "Aneka Sambal" }, "Kopi": { title: "Kopi, Teh dan Minuman Sachet" }, "Snack": { title: "Snack dan Cemilan" }, "Skincare": { title: "Skincare" }, "Sabun": { title: "Sabun & Shampo" }, "Rokok": { title: "Rokok dan Perlengkapan Pribadi" }, "Request": { title: "Request Khusus" } };
     const views = document.querySelectorAll('.view');
     const showView = (viewId) => { views.forEach(v => v.classList.remove('active')); document.getElementById(viewId)?.classList.add('active'); window.scrollTo(0, 0); };
-    const showProductPage = (cat) => { const det = CATEGORY_DETAILS[cat]; if (!det) { console.error("Kategori tidak ditemukan:", cat); return; } document.getElementById('product-page-title').textContent = det.title; showView('page-produk'); fetchAndRenderProducts(cat); };
+    const showProductPage = (cat) => { 
+        if (cat === 'Request') {
+            showView('page-request');
+            generateRequestItems();
+        } else {
+        const det = CATEGORY_DETAILS[cat]; if (!det) { console.error("Kategori tidak ditemukan:", cat); return; } document.getElementById('product-page-title').textContent = det.title; showView('page-produk'); fetchAndRenderProducts(cat); };
     
     const fetchAndRenderProducts = (cat) => { 
         const pc = document.getElementById('product-container'); 
@@ -316,11 +382,116 @@ document.addEventListener('DOMContentLoaded', () => {
     const showToast = (msg) => { const toast = document.getElementById('toast-notification'); toast.textContent = msg; toast.classList.add('show'); clearTimeout(toastTimeout); toastTimeout = setTimeout(() => { toast.classList.remove('show'); }, 2000); };
     const showNotificationPopup = (msg) => { document.getElementById('notification-message').textContent = msg; document.getElementById('notification-popup').style.display = 'flex'; };
     document.getElementById('close-notification-btn').onclick = () => { document.getElementById('notification-popup').style.display = "none"; }
-    
+
+    const generateRequestItems = () => {
+            const container = document.getElementById('request-items-container');
+            container.innerHTML = ''; // Kosongkan dulu
+            for (let i = 1; i <= 5; i++) {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'form-group';
+                itemDiv.innerHTML = `
+                    <label>Barang Request ${i}</label>
+                    <input type="text" class="request-item-name" placeholder="Nama Barang (opsional)">
+                    <div class="file-upload-wrapper">
+                        <div class="file-upload-btn">Upload Foto</div>
+                        <input type="file" class="request-item-file" accept="image/*" onchange="updateFileName(this)">
+                    </div>
+                    <div class="file-preview">Tidak ada file dipilih</div>
+                `;
+                container.appendChild(itemDiv);
+            }
+        };
+
+    window.updateFileName = (input) => {
+        const preview = input.parentElement.nextElementSibling;
+        if (input.files.length > 0) {
+            preview.textContent = input.files[0].name;
+        } else {
+            preview.textContent = 'Tidak ada file dipilih';
+        }
+    };
+
+    const fileToBase64 = (file) => new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result.split(',')[1]);
+        reader.onerror = error => reject(error);
+    });
+
+    document.getElementById('request-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const name = document.getElementById('request-customer-name').value.trim();
+        const whatsapp = document.getElementById('request-customer-whatsapp').value.trim();
+        if (!name || !whatsapp) {
+            showNotificationPopup('Lengkapi Nama & WhatsApp.');
+            return;
+        }
+
+        showLoader();
+
+        const requestItems = [];
+        const itemInputs = document.querySelectorAll('#request-items-container .form-group');
+        let hasContent = false;
+
+        for (const itemInput of itemInputs) {
+            const itemName = itemInput.querySelector('.request-item-name').value.trim();
+            const fileInput = itemInput.querySelector('.request-item-file');
+            let fileData = null;
+
+            if (fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                const base64 = await fileToBase64(file);
+                fileData = {
+                    fileName: file.name,
+                    mimeType: file.type,
+                    content: base64
+                };
+            }
+            
+            if (itemName || fileData) {
+                hasContent = true;
+                requestItems.push({ name: itemName, file: fileData });
+            }
+        }
+        
+        if (!hasContent) {
+            hideLoader();
+            showNotificationPopup('Mohon isi minimal satu nama barang atau upload satu foto.');
+            return;
+        }
+
+        const data = {
+            action: 'newRequest',
+            name,
+            whatsapp,
+            items: requestItems
+        };
+
+        let details = `*Request Khusus dari ${name}*\n\n`;
+        requestItems.forEach((item, index) => {
+            details += `- Barang ${index + 1}: ${item.name || '(tidak ada nama)'} (${item.file ? 'ada foto' : 'tidak ada foto'})\n`;
+        });
+        details += `\nMohon dicek.`;
+        document.getElementById('konfirmasi-wa-btn').href = `https://wa.me/${ADMIN_WHATSAPP_NUMBER}?text=${encodeURIComponent(details)}`;
+
+        fetch(WEB_APP_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(data) })
+        .then(res => res.json()).then(result => {
+            if (result.status === 'success') {
+                document.getElementById('checkout-popup').style.display = 'flex';
+                document.getElementById('request-form').reset();
+                document.querySelectorAll('.file-preview').forEach(p => p.textContent = 'Tidak ada file dipilih');
+            } else {
+                showNotificationPopup('Gagal: ' + result.message);
+            }
+        }).catch(err => showNotificationPopup('Error: ' + err.message)).finally(() => hideLoader());
+    });
+        
     initializeNav();
     updateCartIcon();
     showView('page-utama');
 
+        
     // Animasi GSAP
     const tl = gsap.timeline({ defaults: { ease: "power2.out" } });
     tl.fromTo(".main-header", { y: -50 }, { y: 0, opacity: 1, visibility: "visible", duration: 0.8 }, "+=0.2")
