@@ -68,14 +68,15 @@
         .section-header { margin-top: 40px; margin-bottom: 20px; }
         .section-header h2 { font-size: 1.5rem; font-weight: 600; }
         
+        /* --- ⭐ PERUBAHAN DI SINI ⭐ --- */
         .category-grid { 
             display: grid; 
             grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); 
             gap: 20px; 
-            padding: 20px;
-            border-radius: 15px;
-            background-color: var(--white);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            padding: 20px; /* Menambah padding agar bayangan terlihat */
+            border-radius: 15px; /* Menyamakan lengkungan sudut */
+            background-color: var(--white); /* Memberi latar belakang agar bayangan muncul */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); /* Menambah bayangan tipis */
         }
 
         .category-card { text-align: center; cursor: pointer; }
@@ -110,6 +111,7 @@
         .add-to-cart-btn:hover { background-color: #055a96; }
         .add-to-cart-btn:disabled { background-color: #aaa; }
         
+        /* CSS untuk Input Kuantitas */
         .quantity-selector { display: flex; justify-content: center; align-items: center; margin-bottom: 15px; }
         .quantity-btn {
             width: 30px; height: 30px; border: 1px solid #ccc; background-color: #f5f5f5;
@@ -126,6 +128,7 @@
             -webkit-appearance: none; margin: 0;
         }
         
+        /* Halaman Keranjang & Modals */
         .cart-container { padding: 25px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
         .cart-item { display: flex; align-items: center; border-bottom: 1px solid var(--gray); padding: 15px 0; gap: 15px; }
         .cart-item-img { width: 80px; height: 80px; object-fit: cover; border-radius: 5px; flex-shrink: 0; }
@@ -142,46 +145,22 @@
         #toast-notification { visibility: hidden; min-width: 250px; background-color: #333; color: #fff; text-align: center; border-radius: 5px; padding: 16px; position: fixed; z-index: 5000; left: 50%; transform: translateX(-50%); bottom: 30px; opacity: 0; transition: opacity 0.5s, visibility 0.5s; }
         #toast-notification.show { visibility: visible; opacity: 1; }
 
+        /* Persiapan Animasi */
         .main-header, .welcome-section h1, .promo-banner-container, .section-header, .category-card {
             opacity: 0; visibility: hidden;
         }
 
         /* Tampilan Mobile */
         @media (max-width: 600px) {
-            #page-produk .product-page-grid { grid-template-columns: repeat(3, 1fr); gap: 10px; }
+            #page-produk .product-page-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 10px;
+            }
             .product-info { padding: 10px; }
             .product-name { font-size: 0.8rem; margin-bottom: 8px; }
             .quantity-selector { margin-bottom: 8px; }
             .add-to-cart-btn { padding: 8px; font-size: 0.8rem; }
             .quantity-input { width: 35px; }
-        }
-
-        /* =========================================
-         * === 2. CSS UNTUK ANIMASI LOADING      ===
-         * ========================================= */
-        #loading-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(255, 255, 255, 0.7);
-            display: none; /* Defaultnya tersembunyi */
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-        }
-        .loader {
-            border: 8px solid #f3f3f3; /* Light grey */
-            border-top: 8px solid var(--primary-color); /* Blue */
-            border-radius: 50%;
-            width: 60px;
-            height: 60px;
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
@@ -203,7 +182,8 @@
     </nav>
     <main class="container">
         <div id="page-utama" class="view active">
-            <section class="promo-banner-container"> <img src="https://yanoshijapan.github.io/gambarbelanja/gambars2.png" alt="Promo Banner"> </section>
+            
+            <section class="promo-banner-container"> <img src="https://yanoshijapan.github.io/gambarbelanja/gambars.png" alt="Promo Banner"> </section>
             <section class="category-section">
                 <div class="section-header"><h2>Pilih Kategori</h2></div>
                 <div class="category-grid">
@@ -234,29 +214,14 @@
                 </div>
                 <div class="cart-actions">
                     <button class="btn back-to-home" style="background-color: #bdc3c7;">Tambah Item Lain</button>
-                    <br></br>
                     <button id="checkout-btn" class="btn btn-primary">Kirim Daftar Pesanan</button>
                 </div>
             </div>
         </div>
     </main>
-    <div id="checkout-popup" class="modal">
-        <div class="popup-content">
-            <h2>Terima Kasih!</h2>
-            <p>Daftar pesananmu kita proses ya...</p><br>
-            <a href="#" id="konfirmasi-wa-btn" class="btn" target="_blank" style="background-color: #25D366; color: white;">Konfirmasi via WhatsApp</a>
-            <a href="LINK_FORMULIR_UTAMA_ANDA" id="back-to-form-btn" class="btn" target="_blank" style="background-color: #8e44ad; color: white; margin-top: 10px; width: 100%; box-sizing: border-box;">Kembali ke Form</a>
-            
-            <br><br>
-            <button class="btn btn-primary back-to-home">Tutup</button>
-        </div>
-    </div>
+    <div id="checkout-popup" class="modal"><div class="popup-content"><h2>Terima Kasih!</h2><p>Daftar pesananmu kita proses ya...</p><br><a href="#" id="konfirmasi-wa-btn" class="btn" target="_blank" style="background-color: #25D366; color: white;">Konfirmasi via WhatsApp</a><br><br><button class="btn btn-primary back-to-home">Tutup</button></div></div>
     <div id="notification-popup" class="modal"><div class="popup-content"><p id="notification-message" style="margin-bottom: 20px;"></p><button id="close-notification-btn" class="btn btn-primary">OK</button></div></div>
     <div id="toast-notification"></div>
-
-    <div id="loading-overlay">
-        <div class="loader"></div>
-    </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script>
@@ -264,85 +229,29 @@ document.addEventListener('DOMContentLoaded', () => {
     const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxfft49o6Y0SDZx-OwAbDgddJksOL63LSFHiq8rInRI3lsEQvCEI-7ypz1K_ePWMSwm/exec';
     const ADMIN_WHATSAPP_NUMBER = '6281315431551';
     
-    // ==================================================
-    // === 2. Fungsi untuk menampilkan/menyembunyikan loading ===
-    // ==================================================
-    const loadingOverlay = document.getElementById('loading-overlay');
-    const showLoader = () => loadingOverlay.style.display = 'flex';
-    const hideLoader = () => loadingOverlay.style.display = 'none';
-
-    const CATEGORY_DETAILS = { /* ... isinya sama, tidak perlu diubah ... */ };
+    const CATEGORY_DETAILS = {
+        "Mie": { title: "Aneka Mie" }, "Bumbu": { title: "Aneka Bumbu" }, "Sambal": { title: "Aneka Sambal" },
+        "Kopi": { title: "Kopi, Teh dan Minuman Sachet" }, "Snack": { title: "Snack dan Cemilan" }, "Skincare": { title: "Skincare" },
+        "Sabun": { title: "Sabun & Shampo" }, "Rokok": { title: "Rokok dan Perlengkapan Pribadi" }, "Request": { title: "Request Khusus" }
+    };
     
     const views = document.querySelectorAll('.view');
     const showView = (viewId) => { views.forEach(v => v.classList.remove('active')); document.getElementById(viewId)?.classList.add('active'); window.scrollTo(0, 0); };
-    const showProductPage = (cat) => { /* ... isinya sama, tidak perlu diubah ... */ };
-
-    const fetchAndRenderProducts = (cat) => { 
-        const pc = document.getElementById('product-container'); 
-        pc.innerHTML = ''; // Kosongkan dulu
-        showLoader(); // Tampilkan loading
-        
-        fetch(`${WEB_APP_URL}?action=getProducts&category=${cat}`)
-            .then(res => res.json())
-            .then(res => { 
-                if (res.status === 'success') renderProducts(res.data); 
-                else pc.innerHTML = `<p>Gagal: ${res.message}</p>`; 
-            })
-            .catch(err => pc.innerHTML = `<p>Error: ${err.message}</p>`)
-            .finally(() => hideLoader()); // Sembunyikan loading (baik sukses maupun gagal)
-    };
-
-    const renderProducts = (products) => { /* ... isinya sama, tidak perlu diubah ... */ };
-    window.changeProductQuantity = (button, change) => { /* ... isinya sama, tidak perlu diubah ... */ };
-    window.addToCart = (button, productId) => { /* ... isinya sama, tidak perlu diubah ... */ };
+    const showProductPage = (cat) => { const det = CATEGORY_DETAILS[cat]; if (!det) { console.error("Kategori tidak ditemukan:", cat); return; } document.getElementById('product-page-title').textContent = det.title; showView('page-produk'); fetchAndRenderProducts(cat); };
+    const fetchAndRenderProducts = (cat) => { const pc = document.getElementById('product-container'); pc.innerHTML = '<p>Memuat produk...</p>'; fetch(`${WEB_APP_URL}?action=getProducts&category=${cat}`).then(res => res.json()).then(res => { if (res.status === 'success') renderProducts(res.data); else pc.innerHTML = `<p>Gagal: ${res.message}</p>`; }).catch(err => pc.innerHTML = `<p>Error: ${err.message}</p>`); };
+    const renderProducts = (products) => { const pc = document.getElementById('product-container'); pc.innerHTML = ''; if (products.length === 0) { pc.innerHTML = `<p>Belum ada produk.</p>`; return; } products.forEach(p => { const oos = p.stock <= 0; const card = document.createElement('div'); card.className = `product-item-card ${oos ? 'out-of-stock' : ''}`; card.innerHTML = `<img src="${p.image}" alt="${p.name}" class="product-image"><div class="product-info"><div class="product-name">${p.name}</div><div class="quantity-selector"><button type="button" class="quantity-btn minus" onclick="changeProductQuantity(this, -1)" ${oos ? 'disabled' : ''}>-</button><input type="number" class="quantity-input" value="1" min="1" ${oos ? 'disabled' : ''}><button type="button" class="quantity-btn plus" onclick="changeProductQuantity(this, 1)" ${oos ? 'disabled' : ''}>+</button></div><div class="add-to-cart-controls"><button class="add-to-cart-btn" onclick="addToCart(this, '${p.productId}')" ${oos ? 'disabled' : ''}>${oos ? 'Stok Habis' : 'Tambah ke Daftar'}</button></div></div>`; pc.appendChild(card); }); };
+    window.changeProductQuantity = (button, change) => { const selector = button.parentElement; const input = selector.querySelector('.quantity-input'); let currentValue = parseInt(input.value, 10); let newValue = currentValue + change; if (newValue < 1) { newValue = 1; } input.value = newValue; };
+    window.addToCart = (button, productId) => { const card = button.closest('.product-item-card'); const name = card.querySelector('.product-name').textContent; const image = card.querySelector('.product-image').src; const quantityInput = card.querySelector('.quantity-input'); const quantity = parseInt(quantityInput.value, 10); if (quantity < 1) { showToast("Jumlah minimal adalah 1"); return; } let cart = getCart(); const existingItem = cart.find(item => item.id === productId); if (existingItem) { existingItem.quantity += quantity; } else { cart.push({ id: productId, name, image, quantity: quantity }); } saveCart(cart); showToast(`${quantity}x ${name} ditambahkan`); quantityInput.value = 1; };
     const getCart = () => JSON.parse(localStorage.getItem('jastipCartSimple')) || [];
     const saveCart = (cart) => { localStorage.setItem('jastipCartSimple', JSON.stringify(cart)); updateCartIcon(); };
-    const updateCartIcon = () => { /* ... isinya sama, tidak perlu diubah ... */ };
-    const renderCartPage = () => { /* ... isinya sama, tidak perlu diubah ... */ };
-    window.updateQuantity = (id, chg) => { /* ... isinya sama, tidak perlu diubah ... */ };
-
-    document.getElementById('checkout-btn').addEventListener('click', () => { 
-        const name = document.getElementById('customer-name').value.trim(); 
-        const whatsapp = document.getElementById('customer-whatsapp').value.trim(); 
-        if (!name || !whatsapp) { 
-            showNotificationPopup('Lengkapi Nama & WhatsApp.'); 
-            return; 
-        } 
-        
-        const cart = getCart(); 
-        if (cart.length === 0) return; 
-
-        showLoader(); // Tampilkan loading saat tombol checkout di klik
-        
-        let details = `*Pesanan dari ${name}*\n\n`; 
-        cart.forEach(item => { details += `- ${item.name} (Qty: ${item.quantity})\n`; }); 
-        details += `\nMohon diproses.`; 
-        document.getElementById('konfirmasi-wa-btn').href = `https://wa.me/${ADMIN_WHATSAPP_NUMBER}?text=${encodeURIComponent(details)}`; 
-        
-        const data = { action: 'newOrder', name, whatsapp, items: cart }; 
-        
-        fetch(WEB_APP_URL, { 
-            method: 'POST', 
-            headers: { 'Content-Type': 'text/plain;charset=utf-8' }, 
-            body: JSON.stringify(data) 
-        })
-        .then(res => res.json())
-        .then(result => { 
-            if (result.status === 'success') { 
-                saveCart([]); 
-                document.getElementById('checkout-popup').style.display = 'flex'; 
-            } else { 
-                showNotificationPopup('Gagal: ' + result.message); 
-            } 
-        })
-        .catch(err => showNotificationPopup('Error: ' + err.message))
-        .finally(() => hideLoader()); // Sembunyikan loading (baik sukses maupun gagal)
-    });
-
-    const initializeNav = () => { /* ... isinya sama, tidak perlu diubah ... */ };
+    const updateCartIcon = () => { const el = document.getElementById('cart-count'); const total = getCart().reduce((s, i) => s + i.quantity, 0); el.textContent = total; el.style.display = total > 0 ? 'block' : 'none'; };
+    const renderCartPage = () => { const cart = getCart(); const cont = document.getElementById('cart-items-container'); cont.innerHTML = ''; if (cart.length === 0) { cont.innerHTML = '<p>Daftar pesanan kosong.</p>'; document.getElementById('checkout-btn').disabled = true; return; } document.getElementById('checkout-btn').disabled = false; cart.forEach(item => { const el = document.createElement('div'); el.className = 'cart-item'; el.innerHTML = `<img src="${item.image}" alt="${item.name}" class="cart-item-img"><div class="cart-item-details"><div class="cart-item-name">${item.name}</div></div><div class="cart-item-quantity"><button class="quantity-btn cart" onclick="updateQuantity('${item.id}', -1)">-</button><span>${item.quantity}</span><button class="quantity-btn cart" onclick="updateQuantity('${item.id}', 1)">+</button></div>`; cont.appendChild(el); }); };
+    window.updateQuantity = (id, chg) => { let cart = getCart(); const idx = cart.findIndex(i => i.id === id); if (idx > -1) { cart[idx].quantity += chg; if (cart[idx].quantity <= 0) cart.splice(idx, 1); } saveCart(cart); renderCartPage(); };
+    document.getElementById('checkout-btn').addEventListener('click', () => { const name = document.getElementById('customer-name').value.trim(); const whatsapp = document.getElementById('customer-whatsapp').value.trim(); if (!name || !whatsapp) { showNotificationPopup('Lengkapi Nama & WhatsApp.'); return; } const cart = getCart(); if (cart.length === 0) return; let details = `*Pesanan dari ${name}*\n\n`; cart.forEach(item => { details += `- ${item.name} (Qty: ${item.quantity})\n`; }); details += `\nMohon diproses.`; document.getElementById('konfirmasi-wa-btn').href = `https://wa.me/${ADMIN_WHATSAPP_NUMBER}?text=${encodeURIComponent(details)}`; const data = { action: 'newOrder', name, whatsapp, items: cart }; fetch(WEB_APP_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(data) }).then(res => res.json()).then(result => { if (result.status === 'success') { saveCart([]); document.getElementById('checkout-popup').style.display = 'flex'; } else { showNotificationPopup('Gagal: ' + result.message); } }).catch(err => showNotificationPopup('Error: ' + err.message)); });
+    const initializeNav = () => { document.querySelector('.hamburger-menu').addEventListener('click', () => { document.getElementById('mySidenav').style.width = '250px'; }); document.querySelector('.close-btn').addEventListener('click', () => { document.getElementById('mySidenav').style.width = '0'; }); document.querySelector('#mySidenav .dropdown-btn').addEventListener('click', function() { this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'block' ? 'none' : 'block'; }); document.querySelectorAll('.nav-link').forEach(link => { link.addEventListener('click', (e) => { const page = e.currentTarget.dataset.page; const category = e.currentTarget.dataset.category; if (page) { if (page === 'keranjang') renderCartPage(); showView(`page-${page}`); } if (category) { showProductPage(category); } if (link.parentElement.classList.contains('dropdown-content') || !link.classList.contains('dropdown-btn')) { document.getElementById('mySidenav').style.width = '0'; } }); }); document.querySelectorAll('.category-card').forEach(card => card.addEventListener('click', () => showProductPage(card.dataset.category))); document.querySelectorAll('.back-to-home, #logo-home-btn').forEach(btn => btn.addEventListener('click', (e) => { e.preventDefault(); showView('page-utama'); document.querySelectorAll('.modal').forEach(m => m.style.display = 'none'); })); document.querySelector('.cart-icon').addEventListener('click', () => { renderCartPage(); showView('page-keranjang'); }); };
     let toastTimeout;
-    const showToast = (msg) => { /* ... isinya sama, tidak perlu diubah ... */ };
-    const showNotificationPopup = (msg) => { /* ... isinya sama, tidak perlu diubah ... */ };
+    const showToast = (msg) => { const toast = document.getElementById('toast-notification'); toast.textContent = msg; toast.classList.add('show'); clearTimeout(toastTimeout); toastTimeout = setTimeout(() => { toast.classList.remove('show'); }, 2000); };
+    const showNotificationPopup = (msg) => { document.getElementById('notification-message').textContent = msg; document.getElementById('notification-popup').style.display = 'flex'; };
     document.getElementById('close-notification-btn').onclick = () => { document.getElementById('notification-popup').style.display = "none"; }
     
     initializeNav();
