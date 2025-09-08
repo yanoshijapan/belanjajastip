@@ -4,19 +4,12 @@
     <base target="_top">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Warung Jastip</title>
+    <title>Warung Jastip Yanoshi</title>
     <style>
-        /*
-         * =========================================
-         * PERUBAHAN WARNA DILAKUKAN DI SINI
-         * =========================================
-        */
         :root {
             --primary-color: #2c3e50;
-            /* Merah #e61c1d diubah menjadi Biru #076eb3 */
             --secondary-color: #076eb3; 
             --contact-color: #25d366;
-            /* Merah #e74c3c diubah menjadi Biru #076eb3 */
             --accent-color: #076eb3;
             --bg-color: #f4f4f9;
             --text-color: #333;
@@ -70,7 +63,7 @@
         .view { display: none; }
         .view.active { display: block; }
         .welcome-section h1 { font-size: 2.5rem; font-weight: 700; }
-        .promo-banner-container { margin: 25px 0; border-radius: 15px; overflow: hidden; box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
+        .promo-banner-container { margin: 25px 0; border-radius: 15px; overflow: hidden; }
         .promo-banner-container img { width: 100%; display: block; }
         .section-header { margin-top: 40px; margin-bottom: 20px; }
         .section-header h2 { font-size: 1.5rem; font-weight: 600; }
@@ -85,13 +78,14 @@
         .category-card p { font-weight: 500; font-size: 0.9rem; }
         .btn { padding: 12px 25px; border: none; border-radius: 5px; font-size: 1rem; font-weight: bold; cursor: pointer; transition: background-color 0.3s; text-decoration: none; display: inline-block;}
         .btn-primary { background-color: var(--secondary-color); color: var(--white); }
-        .btn-primary:hover { 
-            /* Merah #8b0000 diubah menjadi Biru lebih gelap */
-            background-color: #055a96; 
-        }
+        .btn-primary:hover { background-color: #055a96; }
 
         /* Halaman Produk */
-        #page-produk .product-page-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
+        #page-produk .product-page-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); 
+            gap: 20px; 
+        }
         .product-item-card { background: var(--white); border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.08); display: flex; flex-direction: column; }
         .product-item-card.out-of-stock { opacity: 0.6; }
         .product-item-card .product-image { width: 100%; cursor: pointer; aspect-ratio: 1/1; object-fit: cover; }
@@ -99,20 +93,11 @@
         .product-name { font-size: 1rem; font-weight: bold; color: var(--primary-color); margin-bottom: 15px; flex-grow: 1; }
         .add-to-cart-controls { margin-top: auto; }
         .add-to-cart-btn { 
-            width: 100%; 
-            background-color: var(--secondary-color); 
-            color: var(--white); 
-            border: none; 
-            border-radius: 5px; 
-            padding: 10px; 
-            cursor: pointer; 
-            font-weight: bold; 
-            transition: background-color 0.3s;
+            width: 100%; background-color: var(--secondary-color); color: var(--white); 
+            border: none; border-radius: 5px; padding: 10px; cursor: pointer; 
+            font-weight: bold; transition: background-color 0.3s;
         }
-        .add-to-cart-btn:hover {
-             /* Merah #8b0000 diubah menjadi Biru lebih gelap */
-            background-color: #055a96;
-        }
+        .add-to-cart-btn:hover { background-color: #055a96; }
         .add-to-cart-btn:disabled { background-color: #aaa; }
         
         /* CSS untuk Input Kuantitas */
@@ -153,6 +138,38 @@
         .main-header, .welcome-section h1, .promo-banner-container, .section-header, .category-card {
             opacity: 0; visibility: hidden;
         }
+
+        /* =========================================
+         * === ⭐ STYLE KHUSUS UNTUK TAMPILAN MOBILE ===
+         * ========================================= */
+        @media (max-width: 600px) {
+            /* 1. Mengubah grid produk menjadi 3 kolom */
+            #page-produk .product-page-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 10px;
+            }
+
+            /* 2. Mengecilkan font nama produk dan padding */
+            .product-info {
+                padding: 10px;
+            }
+            .product-name {
+                font-size: 0.8rem; /* Ukuran font diperkecil */
+                margin-bottom: 8px; /* Jarak bawah dikurangi */
+            }
+
+            /* 3. Penyesuaian lain untuk item di dalam kartu produk */
+            .quantity-selector {
+                margin-bottom: 8px;
+            }
+            .add-to-cart-btn {
+                padding: 8px;
+                font-size: 0.8rem;
+            }
+            .quantity-input {
+                width: 35px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -164,7 +181,7 @@
     <nav id="mySidenav" class="sidenav">
         <a href="javascript:void(0)" class="close-btn">&times;</a>
         <a class="nav-link" data-page="home">Halaman Utama</a>
-        <button class="dropdown-btn">Kategori ▾</button>
+        <button class="dropdown-btn">Kategori Produk ▾</button>
         <div class="dropdown-content">
             <a class="nav-link" data-category="Mie">Aneka Mie</a> <a class="nav-link" data-category="Bumbu">Aneka Bumbu</a> <a class="nav-link" data-category="Sambal">Aneka Sambal</a> <a class="nav-link" data-category="Kopi">Kopi, Teh & Minuman</a> <a class="nav-link" data-category="Snack">Snack & Cemilan</a> <a class="nav-link" data-category="Skincare">Skincare</a> <a class="nav-link" data-category="Sabun">Sabun & Shampo</a> <a class="nav-link" data-category="Rokok">Rokok & Perlengkapan</a> <a class="nav-link" data-category="Request">Request Khusus</a>
         </div>
@@ -173,20 +190,20 @@
     </nav>
     <main class="container">
         <div id="page-utama" class="view active">
-            <section class="welcome-section"> <h1>Warung Jastip</h1> </section>
-            <section class="promo-banner-container"> <img src="https://yanoshijapan.github.io/jastip/banner3.jpg" alt="Promo Banner"> </section>
+            
+            <section class="promo-banner-container"> <img src="https://yanoshijapan.github.io/gambarbelanja/gambars.png" alt="Promo Banner"> </section>
             <section class="category-section">
                 <div class="section-header"><h2>Pilih Kategori</h2></div>
                 <div class="category-grid">
-                    <div class="category-card" data-category="Mie"><div class="icon-container"><img src="https://yanoshijapan.github.io/asetonline/streetwear.jpg"></div><p>Aneka Mie</p></div>
-                    <div class="category-card" data-category="Bumbu"><div class="icon-container"><img src="https://yanoshijapan.github.io/asetonline/tshirt.jpg"></div><p>Aneka Bumbu</p></div>
-                    <div class="category-card" data-category="Sambal"><div class="icon-container"><img src="https://yanoshijapan.github.io/asetonline/hoodie.jpg"></div><p>Aneka Sambal</p></div>
-                    <div class="category-card" data-category="Kopi"><div class="icon-container"><img src="https://yanoshijapan.github.io/asetonline/deluxe.jpg"></div><p>Kopi, Teh dan Minuman Sachet</p></div>
-                    <div class="category-card" data-category="Snack"><div class="icon-container"><img src="https://yanoshijapan.github.io/asetonline/premium.jpg"></div><p>Snack dan Cemilan</p></div>
-                    <div class="category-card" data-category="Skincare"><div class="icon-container"><img src="https://yanoshijapan.github.io/asetonline/keychain.jpg"></div><p>Skincare</p></div>
-                    <div class="category-card" data-category="Sabun"><div class="icon-container"><img src="https://yanoshijapan.github.io/asetonline/sake.jpg"></div><p>Sabun & Shampo</p></div>
-                    <div class="category-card" data-category="Rokok"><div class="icon-container"><img src="https://yanoshijapan.github.io/asetonline/katana.jpg"></div><p>Rokok dan Perlengkapan Pribadi</p></div>
-                    <div class="category-card" data-category="Request"><div class="icon-container"><img src="https://yanoshijapan.github.io/asetonline/snack.jpg"></div><p>Request Khusus</p></div>
+                    <div class="category-card" data-category="Mie"><div class="icon-container"><img src="https://yanoshijapan.github.io/gambarbelanja/anekamie.png"></div><p>Aneka Mie</p></div>
+                    <div class="category-card" data-category="Bumbu"><div class="icon-container"><img src="https://yanoshijapan.github.io/gambarbelanja/anekabumbu.png"></div><p>Aneka Bumbu</p></div>
+                    <div class="category-card" data-category="Sambal"><div class="icon-container"><img src="https://yanoshijapan.github.io/gambarbelanja/anekasambal.png"></div><p>Aneka Sambal</p></div>
+                    <div class="category-card" data-category="Kopi"><div class="icon-container"><img src="https://yanoshijapan.github.io/gambarbelanja/kopi.png"></div><p>Kopi, Teh dan Minuman Sachet</p></div>
+                    <div class="category-card" data-category="Snack"><div class="icon-container"><img src="https://yanoshijapan.github.io/gambarbelanja/snack.png"></div><p>Snack dan Cemilan</p></div>
+                    <div class="category-card" data-category="Skincare"><div class="icon-container"><img src="https://yanoshijapan.github.io/gambarbelanja/skincare.png"></div><p>Skincare</p></div>
+                    <div class="category-card" data-category="Sabun"><div class="icon-container"><img src="https://yanoshijapan.github.io/gambarbelanja/sabun.png"></div><p>Sabun & Shampo</p></div>
+                    <div class="category-card" data-category="Rokok"><div class="icon-container"><img src="https://yanoshijapan.github.io/gambarbelanja/rokok.png"></div><p>Rokok dan Perlengkapan Pribadi</p></div>
+                    <div class="category-card" data-category="Request"><div class="icon-container"><img src="https://yanoshijapan.github.io/gambarbelanja/req.png"></div><p>Request Khusus</p></div>
                 </div>
             </section>
         </div>
@@ -226,7 +243,7 @@ document.addEventListener('DOMContentLoaded', () => {
         "Sabun": { title: "Sabun & Shampo" }, "Rokok": { title: "Rokok dan Perlengkapan Pribadi" }, "Request": { title: "Request Khusus" }
     };
     
-    // ... Sisa kode JavaScript tidak ada yang diubah sama sekali, hanya CSS ...
+    // ... Sisa kode JavaScript tidak ada yang diubah sama sekali ...
     const views = document.querySelectorAll('.view');
     const showView = (viewId) => { views.forEach(v => v.classList.remove('active')); document.getElementById(viewId)?.classList.add('active'); window.scrollTo(0, 0); };
     const showProductPage = (cat) => { const det = CATEGORY_DETAILS[cat]; if (!det) { console.error("Kategori tidak ditemukan:", cat); return; } document.getElementById('product-page-title').textContent = det.title; showView('page-produk'); fetchAndRenderProducts(cat); };
