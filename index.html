@@ -98,7 +98,7 @@
         .product-item-card.out-of-stock { opacity: 0.6; }
         .product-item-card .product-image { width: 100%; cursor: pointer; aspect-ratio: 1/1; object-fit: cover; }
         .product-info { padding: 15px; flex-grow: 1; display: flex; flex-direction: column; }
-        .product-name { font-size: 0.3rem; font-weight: bold; color: var(--primary-color); margin-bottom: 15px; flex-grow: 1; }
+        .product-name { font-size: 0.5rem; font-weight: bold; color: var(--primary-color); margin-bottom: 15px; flex-grow: 1; }
         .add-to-cart-controls { margin-top: auto; }
         .add-to-cart-btn { 
             width: 100%; background-color: var(--secondary-color); color: var(--white); 
@@ -126,7 +126,7 @@
         .cart-item { display: flex; align-items: center; border-bottom: 1px solid var(--gray); padding: 15px 0; gap: 15px; }
         .cart-item-img { width: 80px; height: 80px; object-fit: cover; border-radius: 5px; flex-shrink: 0; }
         .cart-item-details { flex-grow: 1; }
-        .cart-item-name { font-size: 0.3rem; font-weight: bold; }
+        .cart-item-name { font-size: 0.5rem; font-weight: bold; }
         .cart-item-quantity { display: flex; align-items: center; gap: 10px; }
         .quantity-btn.cart { border-radius: 50%; }
         .checkout-form, .cart-actions { margin-top: 30px; }
@@ -145,9 +145,9 @@
         @media (max-width: 600px) {
             #page-produk .product-page-grid { grid-template-columns: repeat(3, 1fr); gap: 10px; }
             .product-info { padding: 10px; }
-            .product-name { font-size: 0.8rem; margin-bottom: 8px; }
+            .product-name { font-size: 0.5rem; margin-bottom: 8px; }
             .quantity-selector { margin-bottom: 8px; }
-            .add-to-cart-btn { padding: 8px; font-size: 0.8rem; }
+            .add-to-cart-btn { padding: 8px; font-size: 0.5rem; }
             .quantity-input { width: 35px; }
         }
 
@@ -216,9 +216,9 @@
                     <div class="form-group"><label for="customer-whatsapp">Nomor WhatsApp Aktif</label><input type="tel" id="customer-whatsapp" placeholder="Contoh: 081234567890"></div>
                 </div>
                 <div class="cart-actions">
-                    <button class="btn back-to-home" style="background-color: #808080;">Tambah Item Lain</button>
+                    <button class="btn back-to-home" style="background-color: #808080;">Tambah Barang Lain</button>
                     <br></br>
-                    <button id="checkout-btn" class="btn btn-primary">Kirim Daftar Pesanan</button>
+                    <button id="checkout-btn" class="btn btn-primary">Kirim List Pesanan</button>
                 </div>
             </div>
         </div>
@@ -226,7 +226,7 @@
     <div id="checkout-popup" class="modal">
         <div class="popup-content">
             <h2>Terima Kasih!</h2>
-            <p>Daftar pesananmu kita proses ya...</p><br>
+            <p>Daftar pesananmu kita proses ya!</p><br>
             <a href="#" id="konfirmasi-wa-btn" class="btn" target="_blank" style="background-color: #25D366; color: white;">Konfirmasi via WhatsApp</a>
             <a href="LINK_FORMULIR_UTAMA_ANDA" id="back-to-form-btn" class="btn" target="_blank" style="background-color: #8e44ad; color: white; margin-top: 10px; width: 100%; box-sizing: border-box;">Kembali ke Form</a>
             <br><br>
@@ -273,7 +273,7 @@ document.addEventListener('DOMContentLoaded', () => {
             .finally(() => hideLoader());
     };
 
-    const renderProducts = (products) => { const pc = document.getElementById('product-container'); pc.innerHTML = ''; if (products.length === 0) { pc.innerHTML = `<p>Belum ada produk untuk kategori ini.</p>`; return; } products.forEach(p => { const oos = p.stock <= 0; const card = document.createElement('div'); card.className = `product-item-card ${oos ? 'out-of-stock' : ''}`; card.innerHTML = `<img src="${p.image}" alt="${p.name}" class="product-image"><div class="product-info"><div class="product-name">${p.name}</div><div class="quantity-selector"><button type="button" class="quantity-btn minus" onclick="changeProductQuantity(this, -1)" ${oos ? 'disabled' : ''}>-</button><input type="number" class="quantity-input" value="1" min="1" ${oos ? 'disabled' : ''}><button type="button" class="quantity-btn plus" onclick="changeProductQuantity(this, 1)" ${oos ? 'disabled' : ''}>+</button></div><div class="add-to-cart-controls"><button class="add-to-cart-btn" onclick="addToCart(this, '${p.productId}')" ${oos ? 'disabled' : ''}>${oos ? 'Stok Habis' : 'Tambah ke Daftar'}</button></div></div>`; pc.appendChild(card); }); };
+    const renderProducts = (products) => { const pc = document.getElementById('product-container'); pc.innerHTML = ''; if (products.length === 0) { pc.innerHTML = `<p>Belum ada produk untuk kategori ini.</p>`; return; } products.forEach(p => { const oos = p.stock <= 0; const card = document.createElement('div'); card.className = `product-item-card ${oos ? 'out-of-stock' : ''}`; card.innerHTML = `<img src="${p.image}" alt="${p.name}" class="product-image"><div class="product-info"><div class="product-name">${p.name}</div><div class="quantity-selector"><button type="button" class="quantity-btn minus" onclick="changeProductQuantity(this, -1)" ${oos ? 'disabled' : ''}>-</button><input type="number" class="quantity-input" value="1" min="1" ${oos ? 'disabled' : ''}><button type="button" class="quantity-btn plus" onclick="changeProductQuantity(this, 1)" ${oos ? 'disabled' : ''}>+</button></div><div class="add-to-cart-controls"><button class="add-to-cart-btn" onclick="addToCart(this, '${p.productId}')" ${oos ? 'disabled' : ''}>${oos ? 'Stok Habis' : 'Tambah ke Keranjang'}</button></div></div>`; pc.appendChild(card); }); };
     window.changeProductQuantity = (button, change) => { const selector = button.parentElement; const input = selector.querySelector('.quantity-input'); let currentValue = parseInt(input.value, 10); let newValue = currentValue + change; if (newValue < 1) { newValue = 1; } input.value = newValue; };
     window.addToCart = (button, productId) => { const card = button.closest('.product-item-card'); const name = card.querySelector('.product-name').textContent; const image = card.querySelector('.product-image').src; const quantityInput = card.querySelector('.quantity-input'); const quantity = parseInt(quantityInput.value, 10); if (quantity < 1) { showToast("Jumlah minimal adalah 1"); return; } let cart = getCart(); const existingItem = cart.find(item => item.id === productId); if (existingItem) { existingItem.quantity += quantity; } else { cart.push({ id: productId, name, image, quantity: quantity }); } saveCart(cart); showToast(`${quantity}x ${name} ditambahkan`); quantityInput.value = 1; };
     const getCart = () => JSON.parse(localStorage.getItem('jastipCartSimple')) || [];
