@@ -67,6 +67,45 @@
         .section-header { margin-top: 20px; margin-bottom: 10px; }
         .section-header h2 { font-size: 0.9rem; font-weight: 600; color: var(--secondary-color); }
         
+        /* --- KODE BARU: STYLING FORM PENCARIAN --- */
+        .search-section {
+            margin-bottom: 25px;
+            padding: 20px;
+            background-color: var(--white);
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+        .search-form-container {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        .search-form-container input[type="text"],
+        .search-form-container select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 0.8rem;
+        }
+        .search-form-container input[type="text"] {
+            flex-grow: 2; /* Membuat input teks lebih lebar */
+        }
+        .search-form-container select {
+            flex-grow: 1;
+        }
+        .search-form-container button {
+            flex-shrink: 0; /* Mencegah tombol menyusut */
+        }
+        /* Penyesuaian untuk layar kecil (Mobile) */
+        @media (max-width: 600px) {
+            .search-form-container {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+        /* --- AKHIR KODE BARU --- */
+
         .category-grid { 
             display: grid; 
             grid-template-columns: repeat(3, 1fr); 
@@ -138,7 +177,7 @@
         #toast-notification { visibility: hidden; min-width: 250px; background-color: #333; color: #fff; text-align: center; border-radius: 5px; padding: 16px; position: fixed; z-index: 5000; left: 50%; transform: translateX(-50%); bottom: 30px; opacity: 0; transition: opacity 0.5s, visibility 0.5s; }
         #toast-notification.show { visibility: visible; opacity: 1; }
 
-        .main-header, .promo-banner-container, .section-header, .category-card {
+        .main-header, .promo-banner-container, .search-section, .section-header, .category-card {
             opacity: 0; visibility: hidden;
         }
         .file-upload-wrapper {
@@ -200,6 +239,19 @@
     <main class="container">
         <div id="page-utama" class="view active">
             <section class="promo-banner-container"> <img src="https://yanoshijapan.github.io/gambarbelanja/gambars3.png" alt="Promo Banner"> </section>
+            
+            <section class="search-section">
+                <div class="section-header">
+                    <h2>Cari Produk</h2>
+                </div>
+                <form id="search-form" class="search-form-container">
+                    <input type="text" id="search-input" placeholder="Ketik nama produk...">
+                    <select id="search-category-filter">
+                        <option value="Semua">Semua Kategori</option>
+                        </select>
+                    <button type="submit" class="btn btn-primary">Cari</button>
+                </form>
+            </section>
             <section class="category-section">
                 <div class="section-header"><h2>Pilih Kategori</h2></div>
                 <div class="category-grid">
@@ -292,6 +344,10 @@ document.addEventListener('DOMContentLoaded', () => {
     hideLoader();
 
     const CATEGORY_DETAILS = { "Mie": { title: "Aneka Mie" }, "Bumbu": { title: "Aneka Bumbu" }, "Sambal": { title: "Aneka Sambal" }, "Kopi": { title: "Kopi, Teh dan Minuman Sachet" }, "Snack": { title: "Snack dan Cemilan" }, "Skincare": { title: "Skincare" }, "Sabun": { title: "Sabun & Shampo" }, "Rokok": { title: "Rokok dan Perlengkapan Pribadi" } };
+    
+    // Variabel baru untuk menyimpan semua produk
+    let allProducts = [];
+
     const views = document.querySelectorAll('.view');
     const showView = (viewId) => { views.forEach(v => v.classList.remove('active')); document.getElementById(viewId)?.classList.add('active'); window.scrollTo(0, 0); };
     
@@ -325,7 +381,61 @@ document.addEventListener('DOMContentLoaded', () => {
             .finally(() => hideLoader());
     };
 
-    const renderProducts = (products) => { const pc = document.getElementById('product-container'); pc.innerHTML = ''; if (products.length === 0) { pc.innerHTML = `<p>Belum ada produk untuk kategori ini.</p>`; return; } products.forEach(p => { const oos = p.stock <= 0; const card = document.createElement('div'); card.className = `product-item-card ${oos ? 'out-of-stock' : ''}`; card.innerHTML = `<img src="${p.image}" alt="${p.name}" class="product-image"><div class="product-info"><div class="product-name">${p.name}</div><div class="quantity-selector"><button type="button" class="quantity-btn minus" onclick="changeProductQuantity(this, -1)" ${oos ? 'disabled' : ''}>-</button><input type="number" class="quantity-input" value="1" min="1" ${oos ? 'disabled' : ''}><button type="button" class="quantity-btn plus" onclick="changeProductQuantity(this, 1)" ${oos ? 'disabled' : ''}>+</button></div><div class="add-to-cart-controls"><button class="add-to-cart-btn" onclick="addToCart(this, '${p.productId}')" ${oos ? 'disabled' : ''}>${oos ? 'Stok Habis' : 'Tambah ke Keranjang'}</button></div></div>`; pc.appendChild(card); }); };
+    // Fungsi baru untuk mengambil SEMUA produk dan menyimpannya
+    const fetchAllProductsAndSetupSearch = async () => {
+        showLoader();
+        const categoryKeys = Object.keys(CATEGORY_DETAILS);
+        const searchCategoryFilter = document.getElementById('search-category-filter');
+
+        // Mengisi dropdown kategori di form pencarian
+        categoryKeys.forEach(cat => {
+            const option = document.createElement('option');
+            option.value = cat;
+            option.textContent = CATEGORY_DETAILS[cat].title;
+            searchCategoryFilter.appendChild(option);
+        });
+
+        const promises = categoryKeys.map(category =>
+            fetch(`${WEB_APP_URL}?action=getProducts&category=${category}`)
+            .then(res => res.json())
+            .then(result => {
+                if (result.status === 'success') {
+                    // Menambahkan properti kategori ke setiap produk
+                    return result.data.map(product => ({ ...product, category: category }));
+                }
+                return [];
+            })
+        );
+        
+        try {
+            const results = await Promise.all(promises);
+            allProducts = results.flat(); // Menggabungkan semua array produk menjadi satu
+        } catch (error) {
+            console.error("Gagal mengambil semua produk:", error);
+            showNotificationPopup("Gagal memuat data produk untuk pencarian.");
+        } finally {
+            hideLoader();
+        }
+    };
+    
+    // Event listener untuk form pencarian
+    document.getElementById('search-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const searchTerm = document.getElementById('search-input').value.toLowerCase();
+        const selectedCategory = document.getElementById('search-category-filter').value;
+
+        let filteredProducts = allProducts.filter(product => {
+            const nameMatch = product.name.toLowerCase().includes(searchTerm);
+            const categoryMatch = (selectedCategory === 'Semua') || (product.category === selectedCategory);
+            return nameMatch && categoryMatch;
+        });
+
+        showView('page-produk');
+        document.getElementById('product-page-title').textContent = `Hasil Pencarian untuk "${searchTerm}"`;
+        renderProducts(filteredProducts);
+    });
+
+    const renderProducts = (products) => { const pc = document.getElementById('product-container'); pc.innerHTML = ''; if (products.length === 0) { pc.innerHTML = `<p>Produk tidak ditemukan.</p>`; return; } products.forEach(p => { const oos = p.stock <= 0; const card = document.createElement('div'); card.className = `product-item-card ${oos ? 'out-of-stock' : ''}`; card.innerHTML = `<img src="${p.image}" alt="${p.name}" class="product-image"><div class="product-info"><div class="product-name">${p.name}</div><div class="quantity-selector"><button type="button" class="quantity-btn minus" onclick="changeProductQuantity(this, -1)" ${oos ? 'disabled' : ''}>-</button><input type="number" class="quantity-input" value="1" min="1" ${oos ? 'disabled' : ''}><button type="button" class="quantity-btn plus" onclick="changeProductQuantity(this, 1)" ${oos ? 'disabled' : ''}>+</button></div><div class="add-to-cart-controls"><button class="add-to-cart-btn" onclick="addToCart(this, '${p.productId}')" ${oos ? 'disabled' : ''}>${oos ? 'Stok Habis' : 'Tambah ke Keranjang'}</button></div></div>`; pc.appendChild(card); }); };
     window.changeProductQuantity = (button, change) => { const selector = button.parentElement; const input = selector.querySelector('.quantity-input'); let currentValue = parseInt(input.value, 10); let newValue = currentValue + change; if (newValue < 1) { newValue = 1; } input.value = newValue; };
     window.addToCart = (button, productId) => { const card = button.closest('.product-item-card'); const name = card.querySelector('.product-name').textContent; const image = card.querySelector('.product-image').src; const quantityInput = card.querySelector('.quantity-input'); const quantity = parseInt(quantityInput.value, 10); if (quantity < 1) { showToast("Jumlah minimal adalah 1"); return; } let cart = getCart(); const existingItem = cart.find(item => item.id === productId); if (existingItem) { existingItem.quantity += quantity; } else { cart.push({ id: productId, name, image, quantity: quantity }); } saveCart(cart); showToast(`${quantity}x ${name} ditambahkan`); quantityInput.value = 1; };
     const getCart = () => JSON.parse(localStorage.getItem('jastipCartSimple')) || [];
@@ -463,11 +573,16 @@ document.addEventListener('DOMContentLoaded', () => {
     updateCartIcon();
     showView('page-utama');
     
+    // Panggil fungsi untuk mengambil semua produk saat halaman dimuat
+    fetchAllProductsAndSetupSearch();
+
     // Animasi GSAP
     const tl = gsap.timeline({ defaults: { ease: "power2.out" } });
     tl.fromTo(".main-header", { y: -50 }, { y: 0, opacity: 1, visibility: "visible", duration: 0.8 }, "+=0.2")
       .fromTo(".promo-banner-container", { scale: 0.9 }, { scale: 1, opacity: 1, visibility: "visible", duration: 0.7 }, "-=0.3")
-      .fromTo(".section-header", { y: 20 }, { y: 0, opacity: 1, visibility: "visible", duration: 0.5 })
+      // Tambahkan animasi untuk search section
+      .fromTo(".search-section", { y: 20, opacity: 0 }, { y: 0, opacity: 1, visibility: "visible", duration: 0.5 }, "-=0.4")
+      .fromTo(".section-header", { y: 20 }, { y: 0, opacity: 1, visibility: "visible", duration: 0.5 }, "-=0.4")
       .fromTo(".category-card", { y: 20, opacity: 0 }, { y: 0, opacity: 1, visibility: "visible", duration: 0.5, stagger: 0.1 }, "-=0.3");
 });
 </script>
