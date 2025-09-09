@@ -196,6 +196,17 @@
         .file-preview {
             font-size: 0.8rem; margin-top: 5px; color: var(--secondary-color);
         }
+        .back-to-menu-link {
+            display: inline-block;
+            margin-bottom: 25px; /* Memberi jarak ke grid produk di bawahnya */
+            font-size: 0.9rem;
+            color: #ffffff
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .back-to-menu-link:hover {
+            text-decoration: underline;
+        }
         @media (max-width: 600px) {
             #page-produk .product-page-grid { grid-template-columns: repeat(3, 1fr); gap: 10px; }
             .product-info { padding: 10px; }
@@ -269,8 +280,9 @@
         </div>
         <div id="page-produk" class="view">
             <h2 id="product-page-title" style="margin-bottom: 20px;"></h2>
+            <a href="#" class="back-to-menu-link back-to-home">
             <div id="product-container" class="product-page-grid"></div>
-            <br><a href="#" class="btn back-to-home" style="background-color: #bdc3c7;">Kembali ke Halaman Utama</a>
+            <br><a href="https://belanjajastip.netlify.app/" class="btn back-to-home" style="background-color: #ffffff;">Kembali ke Halaman Utama</a>
         </div>
         <div id="page-keranjang" class="view">
             <div class="cart-container">
