@@ -97,6 +97,28 @@
         .search-form-container button {
             flex-shrink: 0; /* Mencegah tombol menyusut */
         }
+        .logo-container {
+            display: flex;
+            align-items: center; /* Membuat logo dan tombol sejajar secara vertikal */
+            gap: 20px; /* Memberi jarak antara logo dan tombol */
+        }
+        
+        /* Styling untuk membuat link terlihat seperti tombol */
+        .btn-header-form {
+            padding: 8px 16px;
+            background-color: #007bff; /* Warna biru, bisa disesuaikan */
+            color: white;
+            text-decoration: none; /* Menghilangkan garis bawah pada link */
+            border-radius: 5px; /* Membuat sudut tombol sedikit melengkung */
+            font-size: 14px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+        
+        /* Efek saat kursor mouse diarahkan ke tombol */
+        .btn-header-form:hover {
+            background-color: #0056b3; /* Warna biru yang lebih gelap */
+        }
         /* Penyesuaian untuk layar kecil (Mobile) */
         @media (max-width: 600px) {
             .search-form-container {
@@ -207,6 +229,22 @@
         .back-to-menu-link:hover {
             text-decoration: underline;
         }
+        @keyframes fadeSlideIn {
+          from {
+            opacity: 0; /* Mulai dari transparan */
+            transform: translateY(20px); /* Mulai 20px dari bawah */
+          }
+          to {
+            opacity: 1; /* Selesai dengan terlihat jelas */
+            transform: translateY(0); /* Kembali ke posisi normal */
+          }
+        }
+    
+        /* Terapkan animasi ke class .info-animasi */
+        .info-animasi {
+          /* Menjalankan animasi 'fadeSlideIn' selama 1 detik */
+          animation: fadeSlideIn 1s ease-out forwards;
+        }
         @media (max-width: 600px) {
             #page-produk .product-page-grid { grid-template-columns: repeat(3, 1fr); gap: 10px; }
             .product-info { padding: 10px; }
@@ -267,7 +305,7 @@
                 </form>
             </section>
             <section class="category-section">
-                <p>Jika barangmu tidak ada di kategori, silakan isi di bagian menu "Request Khusus" atau bisa "kembali ke form" dan isi melalui kolom "Barang yang ingin di jastip".</p>
+                <p class="info-animasi">Jika barangmu tidak ada di kategori, silakan isi di bagian menu "Request Khusus" atau bisa "kembali ke form" dan isi melalui kolom "Barang yang ingin di jastip".</p>
                 <div class="section-header"><h2>Pilih Kategori</h2></div>
                 <div class="category-grid">
                     <div class="category-card" data-category="Mie"><div class="icon-container"><img src="https://yanoshijapan.github.io/gambarbelanja/anekamie.png"></div><p>Aneka Mie</p></div>
